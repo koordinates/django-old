@@ -130,7 +130,7 @@ class WSGIRequest(http.HttpRequest):
 
     def _load_post_and_files(self):
         # Populates self._post and self._files
-        if self.method == 'POST':
+        if self.method != 'GET':
             if self.environ.get('CONTENT_TYPE', '').startswith('multipart'):
                 self._raw_post_data = ''
                 try:
