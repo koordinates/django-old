@@ -151,6 +151,10 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         'istartswith': "LIKE %s ESCAPE '\\'",
         'iendswith': "LIKE %s ESCAPE '\\'",
     }
+    
+    def __init__(self, *args, **kwargs):
+        BaseDatabaseWrapper.__init__(self, *args, **kwargs)
+        self._cursors = []
 
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
@@ -179,7 +183,9 @@ class DatabaseWrapper(BaseDatabaseWrapper):
             self.connection.create_function("django_date_trunc", 2, _sqlite_date_trunc)
             self.connection.create_function("regexp", 2, _sqlite_regexp)
             connection_created.send(sender=self.__class__)
-        return self.connection.cursor(factory=SQLiteCursorWrapper)
+        cursor = self.connection.cursor(factory=SQLiteCursorWrapper)
+        self._cursors.append(cursor)
+        return cursor
 
     def close(self):
         # If database is in memory, closing the connection destroys the
@@ -187,6 +193,11 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         # an in-memory db.
         if self.settings_dict['DATABASE_NAME'] != ":memory:":
             BaseDatabaseWrapper.close(self)
+            for c in self._cursors:
+                try:
+                    c.close()
+                except Database.Error:
+                    pass
 
 FORMAT_QMARK_REGEX = re.compile(r'(?![^%])%s')
 
