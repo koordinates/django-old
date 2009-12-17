@@ -588,6 +588,12 @@ class Model(object):
         self._collect_sub_objects(seen_objs)
 
         # Actually delete the objects.
+        print seen_objs.items()
+        if seen_objs.items() == [(type(self), { self.pk : self })]:
+            delete_objects(seen_objs)
+        else:
+            raise Exception("related objects found")
+        # Actually delete the objects.
         delete_objects(seen_objs)
 
     delete.alters_data = True

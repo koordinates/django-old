@@ -49,6 +49,8 @@ class DatabaseFeatures(BaseDatabaseFeatures):
     needs_datetime_string_cast = False
     uses_custom_query_class = True
     interprets_empty_strings_as_nulls = True
+    has_select_for_update = True
+    has_select_for_update_nowait = True
     uses_savepoints = True
     can_return_id_from_insert = True
     allow_sliced_subqueries = False
@@ -234,6 +236,12 @@ WHEN (new.%(col_name)s IS NULL)
                                            'table': table_name,
                                            'column': column_name})
         return output
+
+    def signals_deadlock(self, exception):
+        return exception.args[0].code == 60
+
+    def signals_lock_not_available(self, exception):
+        return exception.args[0].code == 54
 
     def start_transaction_sql(self):
         return ''

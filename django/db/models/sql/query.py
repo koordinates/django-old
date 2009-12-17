@@ -12,7 +12,7 @@ from django.utils.tree import Node
 from django.utils.datastructures import SortedDict
 from django.utils.encoding import force_unicode
 from django.db.backends.util import truncate_name
-from django.db import connection
+from django.db import connection, DatabaseError
 from django.db.models import signals
 from django.db.models.fields import FieldDoesNotExist
 from django.db.models.query_utils import select_related_descend
@@ -28,7 +28,13 @@ try:
 except NameError:
     from sets import Set as set     # Python 2.3 fallback
 
-__all__ = ['Query', 'BaseQuery']
+__all__ = ['Query', 'BaseQuery', 'LockNotAvailable']
+
+class LockNotAvailable(DatabaseError):
+    '''
+    Raised when a query fails because a lock was not available.
+    '''
+    pass
 
 class BaseQuery(object):
     """
@@ -73,6 +79,8 @@ class BaseQuery(object):
         self.order_by = []
         self.low_mark, self.high_mark = 0, None  # Used for offset/limit
         self.distinct = False
+        self.select_for_update = False
+        self.select_for_update_nowait = False
         self.select_related = False
         self.related_select_cols = []
 
@@ -208,6 +216,8 @@ class BaseQuery(object):
         obj.order_by = self.order_by[:]
         obj.low_mark, obj.high_mark = self.low_mark, self.high_mark
         obj.distinct = self.distinct
+        obj.select_for_update = self.select_for_update
+        obj.select_for_update_nowait = self.select_for_update_nowait
         obj.select_related = self.select_related
         obj.related_select_cols = []
         obj.aggregates = deepcopy(self.aggregates, memo=memo)
@@ -338,6 +348,7 @@ class BaseQuery(object):
 
         query.clear_ordering(True)
         query.clear_limits()
+        query.select_for_update = False
         query.select_related = False
         query.related_select_cols = []
         query.related_select_fields = []
@@ -450,6 +461,11 @@ class BaseQuery(object):
                         result.append('LIMIT %d' % val)
                 result.append('OFFSET %d' % self.low_mark)
 
+        if self.select_for_update and self.connection.features.has_select_for_update:
+            nowait = self.select_for_update_nowait and self.connection.features.has_select_for_update
+            result.append("%s" % self.connection.ops.for_update_sql(nowait=nowait))
+
+        params.extend(self.extra_params)
         return ' '.join(result), tuple(params)
 
     def as_nested_sql(self):
@@ -2344,7 +2360,12 @@ class BaseQuery(object):
             else:
                 return
         cursor = self.connection.cursor()
-        cursor.execute(sql, params)
+        try:
+            cursor.execute(sql, params)
+        except DatabaseError, e:
+            if self.connection.features.has_select_for_update_nowait and self.connection.ops.signals_lock_not_available(e):
+                raise LockNotAvailable(*e.args)
+            raise
 
         if not result_type:
             return cursor

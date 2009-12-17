@@ -17,6 +17,7 @@ from django.utils.safestring import SafeUnicode, SafeString
 try:
     import psycopg2 as Database
     import psycopg2.extensions
+    from psycopg2 import errorcodes
 except ImportError, e:
     from django.core.exceptions import ImproperlyConfigured
     raise ImproperlyConfigured("Error loading psycopg2 module: %s" % e)
@@ -30,6 +31,8 @@ psycopg2.extensions.register_adapter(SafeUnicode, psycopg2.extensions.QuotedStri
 
 class DatabaseFeatures(BaseDatabaseFeatures):
     needs_datetime_string_cast = False
+    has_select_for_update = True
+    has_select_for_update_nowait = True
     can_return_id_from_insert = False
 
 class DatabaseOperations(PostgresqlDatabaseOperations):
@@ -41,6 +44,11 @@ class DatabaseOperations(PostgresqlDatabaseOperations):
 
     def return_insert_id(self):
         return "RETURNING %s", ()
+
+    signals_deadlock = lambda self, e: e.pgcode == errorcodes.DEADLOCK_DETECTED
+
+    signals_lock_not_available = lambda self, e: e.pgcode == errorcodes.LOCK_NOT_AVAILABLE
+    
 
 class DatabaseWrapper(BaseDatabaseWrapper):
     operators = {

@@ -114,6 +114,8 @@ class DatabaseFeatures(BaseDatabaseFeatures):
     allows_group_by_pk = True
     related_fields_match_type = True
     allow_sliced_subqueries = False
+    has_select_for_update = True
+    has_select_for_update_nowait = False
 
 class DatabaseOperations(BaseDatabaseOperations):
     def date_extract_sql(self, lookup_type, field_name):
@@ -208,6 +210,8 @@ class DatabaseOperations(BaseDatabaseOperations):
 
         # MySQL doesn't support microseconds
         return unicode(value.replace(microsecond=0))
+
+    signals_deadlock = lambda self, e: e.args[0] == ER.LOCK_DEADLOCK
 
     def year_lookup_bounds(self, value):
         # Again, no microseconds
