@@ -90,6 +90,9 @@ create_linearring = geom_output(lgeos.GEOSGeom_createLinearRing, [CS_PTR])
 create_polygon = geom_output(lgeos.GEOSGeom_createPolygon, None)
 create_collection = geom_output(lgeos.GEOSGeom_createCollection, None)
 
+#Polygonizer
+polygonize = geom_output(lgeos.GEOSPolygonize, None)
+
 # Ring routines
 get_extring = geom_output(lgeos.GEOSGetExteriorRing, [GEOM_PTR])
 get_intring = geom_index(lgeos.GEOSGetInteriorRingN)
