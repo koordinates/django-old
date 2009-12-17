@@ -588,7 +588,6 @@ class Model(object):
         self._collect_sub_objects(seen_objs)
 
         # Actually delete the objects.
-        print seen_objs.items()
         if seen_objs.items() == [(type(self), { self.pk : self })]:
             delete_objects(seen_objs)
         else:
