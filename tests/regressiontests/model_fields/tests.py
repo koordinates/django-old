@@ -6,7 +6,7 @@ from django import forms
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from models import Foo, Bar, Whiz, BigD, BigS, Image, Post
+from models import Foo, Bar, Whiz, BigD, BigS, Image, Post, BigInt
 
 try:
     from decimal import Decimal
@@ -172,3 +172,30 @@ class TypeCoercionTests(django.test.TestCase):
     def test_lookup_integer_in_textfield(self):
         self.assertEquals(Post.objects.filter(body=24).count(), 0)
 
+class BigIntegerFieldTests(django.test.TestCase):
+    def test_limits(self):
+        # Ensure that values that are right at the limits can be saved
+        # and then retrieved without corruption. 
+        maxval = 9223372036854775807
+        minval = -maxval - 1
+        BigInt.objects.create(value=maxval)
+        qs = BigInt.objects.filter(value__gte=maxval)
+        self.assertEqual(qs.count(), 1)
+        self.assertEqual(qs[0].value, maxval)
+        BigInt.objects.create(value=minval)
+        qs = BigInt.objects.filter(value__lte=minval)
+        self.assertEqual(qs.count(), 1)
+        self.assertEqual(qs[0].value, minval)
+
+    def test_types(self):
+        b = BigInt(value = 0)
+        self.assertTrue(isinstance(b.value, (int, long)))
+        b.save()
+        self.assertTrue(isinstance(b.value, (int, long)))
+        b = BigInt.objects.all()[0]
+        self.assertTrue(isinstance(b.value, (int, long)))
+
+    def test_coercing(self):
+        BigInt.objects.create(value ='10')
+        b = BigInt.objects.get(value = '10')
+        self.assertEqual(b.value, 10)
