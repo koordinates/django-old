@@ -1,4 +1,4 @@
-python-django-gis (1.1.2alpha~otm1) intrepid; urgency=high
+python-django-gis (1.1.1~otm1) intrepid; urgency=high
 
   * Upgrade to django 1.1 and apply our previous in-house modifications.
 
