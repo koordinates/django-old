@@ -88,7 +88,7 @@ class PostGISField(Field):
         SRID of the field.  Specifically, this routine will substitute in the
         ST_Transform() function call.
         """
-        if value is None or value.srid == self.srid:
+        if value is None or value.srid == self.srid or self.srid <= 0:
             return '%s'
         else:
             # Adding Transform() to the SQL placeholder.
