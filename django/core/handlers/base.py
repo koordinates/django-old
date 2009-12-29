@@ -169,12 +169,9 @@ class BaseHandler(object):
         # When DEBUG is False, send an error message to the admins.
         subject = 'Error (%s IP): %s' % ((request.META.get('REMOTE_ADDR') in settings.INTERNAL_IPS and 'internal' or 'EXTERNAL'), request.path)
         is_html = False
-        if getattr(settings, 'ERROR_EMAIL_JSON', False):
-            try:
-                traceback_info, is_html = self._get_traceback_extra(exc_info, ignore_request=request)
-            except:
-                traceback_info = self._get_traceback(exc_info)
-        else:
+        try:
+            traceback_info, is_html = self._get_traceback_extra(exc_info, request=request)
+        except:
             traceback_info = self._get_traceback(exc_info)
         try:
             request_repr = repr(request)
@@ -209,64 +206,44 @@ class BaseHandler(object):
         import traceback
         return '\n'.join(traceback.format_exception(*(exc_info or sys.exc_info())))
 
-    def _get_traceback_extra(self, exc_info=None, ignore_request=None):
+    def _get_traceback_extra(self, exc_info=None, request=None):
         """
         Helper function to return traceback including local vars. 
         Loads template 'django_error_email.html' if it exists, otherwise falls 
         back to a json dump.
         """
         import sys
-        from django.views.debug import _get_lines_from_file
+        from django.views.debug import ExceptionReporter
         from django.utils import simplejson
         
         if exc_info is None:
             exc_info = sys.exc_info()
         
-        e, tb = exc_info[1:3]
-        
-        c = {'error': {'type': type(e).__name__, 'message': e.message}, 'request': ignore_request}
-        
-        frames = []
+        exc_info = list(exc_info)
         
         #skip first frame, it is always django/core/handlers/base.py in get_response 
         # (it clutters up the stack trace with huge request_repr var, making it hard to read)
-        tb = tb.tb_next
+        exc_info[2] = exc_info[2].tb_next
         
-        while tb is not None:
-            # support for __traceback_hide__ which is used by a few libraries
-            # to hide internal frames.
-            if tb.tb_frame.f_locals.get('__traceback_hide__'):
-                tb = tb.tb_next
-                continue
-            filename = tb.tb_frame.f_code.co_filename
-            function = tb.tb_frame.f_code.co_name
-            lineno = tb.tb_lineno - 1
-            loader = tb.tb_frame.f_globals.get('__loader__')
-            module_name = tb.tb_frame.f_globals.get('__name__')
-            context_line = _get_lines_from_file(filename, lineno, 0, loader, module_name)[2]
-            vars = {}
-            
-            for key, value in tb.tb_frame.f_locals.items():
-                if type(value) == type(ignore_request) and value == ignore_request:
-                    # request pollutes the stack repr by being HUGE. we already send this out
-                    value = '(request object)'
-                try:
-                    simplejson.dumps(value)
-                    vars[key] = value
-                except TypeError:
-                    vars[key] = repr(value)
-            frames.append({
-                'filename': filename,
-                'function': function,
-                'lineno': lineno + 1,
-                'vars': vars,
-                'id': id(tb),
-                'context_line': context_line,
-            })
-            tb = tb.tb_next
-        c['error']['stack_trace'] = frames
-        del tb
-        del exc_info
+        reporter = ExceptionReporter(request, *exc_info)
+        frames = reporter.get_traceback_frames()
+        
+        # remove huge request object from all the stack frames to reduce clutter.
+        # we include this *once* below.
+        for frame in frames:
+            for i, (k, v) in enumerate(frame['vars']):
+                if v == request:
+                    frame['vars'][i] = (k, '(request object)' )
+        
+        c = {
+            'error': {
+                'type': type(exc_info[1]).__name__,
+                'message': exc_info[1].message,
+                'stack_trace': frames,
+            },
+            'request': request,
+        }
+        
         try:
             from django.template import loader, Context
             t = loader.get_template('django_error_email.html')
