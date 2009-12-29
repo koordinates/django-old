@@ -1,3 +1,15 @@
+python-django-gis (1.1.1~otm3) feisty; urgency=low
+
+  * fix our custom error reporting stuff, by making it use the new django.views.debug.ExceptionReporter class
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Wed, 30 Dec 2009 12:2$
+
+python-django-gis (1.1.1~otm2) feisty; urgency=low
+
+  * fix srid bugs and sqlindexes bug
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Tue, 22 Dec 2009 12:25:35 +1300
+
 python-django-gis (1.1.1~otm1) intrepid; urgency=high
 
   * Upgrade to django 1.1 and apply our previous in-house modifications.
