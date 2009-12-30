@@ -228,12 +228,17 @@ class BaseHandler(object):
         reporter = ExceptionReporter(request, *exc_info)
         frames = reporter.get_traceback_frames()
         
-        # remove huge request object from all the stack frames to reduce clutter.
-        # we include this *once* below.
         for frame in frames:
             for i, (k, v) in enumerate(frame['vars']):
                 if v == request:
-                    frame['vars'][i] = (k, '(request object)' )
+                    # remove huge request object from all the stack frames to reduce clutter.
+                    # we include this *once* below.
+                    v = '(request object)'
+                try:
+                    simplejson.dumps(v)
+                except TypeError:
+                    v = repr(v)
+                frame['vars'][i] = (k, v)
         
         c = {
             'error': {
