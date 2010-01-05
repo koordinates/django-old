@@ -13,15 +13,21 @@ var DateTimeShortcuts = {
     clockLinkName: 'clocklink',      // name of the link that is used to toggle
     admin_media_prefix: '',
     init: function() {
-        // Deduce admin_media_prefix by looking at the <script>s in the
+        // admin_media_prefix should have been set as a global variable in the
+        // template, but if not deduce it by looking at the <script>s in the
         // current document and finding the URL of *this* module.
-        var scripts = document.getElementsByTagName('script');
-        for (var i=0; i<scripts.length; i++) {
-            if (scripts[i].src.match(/DateTimeShortcuts/)) {
-                var idx = scripts[i].src.indexOf('js/admin/DateTimeShortcuts');
-                DateTimeShortcuts.admin_media_prefix = scripts[i].src.substring(0, idx);
-                break;
+        if (window.admin_media_prefix == undefined) {
+            var scripts = document.getElementsByTagName('script');
+            for (var i=0; i<scripts.length; i++) {
+                if (scripts[i].src.match(/DateTimeShortcuts/)) {
+                    var idx = scripts[i].src.indexOf('js/admin/DateTimeShortcuts');
+                    DateTimeShortcuts.admin_media_prefix = scripts[i].src.substring(0, idx);
+                    break;
+                }
             }
+        } 
+        else {
+            DateTimeShortcuts.admin_media_prefix = window.admin_media_prefix;
         }
 
         var inputs = document.getElementsByTagName('input');

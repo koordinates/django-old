@@ -1,3 +1,10 @@
+python-django-gis (1.1.1~otm5) intrepid; urgency=low
+
+  * Fixed 404s in Firefox at admin pages, see upstream ticket http://code.djangoproject.com/ticket/11967
+  * (applied admin_media.2.diff from upstream ticket)
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Tue, 05 Jan 2010 13:13:28 +1300
+
 python-django-gis (1.1.1~otm4) intrepid; urgency=low
 
   * fix error handling of variables without __unicode__ (eg classes)
