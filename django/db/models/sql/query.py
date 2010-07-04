@@ -465,7 +465,6 @@ class BaseQuery(object):
             nowait = self.select_for_update_nowait and self.connection.features.has_select_for_update
             result.append("%s" % self.connection.ops.for_update_sql(nowait=nowait))
 
-        params.extend(self.extra_params)
         return ' '.join(result), tuple(params)
 
     def as_nested_sql(self):
