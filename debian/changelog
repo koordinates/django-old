@@ -1,4 +1,4 @@
-python-django-gis (1.1.2~otm6) intrepid; urgency=low
+python-django-gis (1.1.2-1~otm6) intrepid; urgency=low
 
   * Rebase to latest upstream revision for 1.1.X branch ( http://github.com/django/django/commit/5d5a65fa24f269817c772b8b0777e25e7146354a )
 
