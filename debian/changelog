@@ -1,8 +1,8 @@
-python-django-gis (1.1.1~otm6) intrepid; urgency=low
+python-django-gis (1.1.2~otm6) intrepid; urgency=low
 
   * Rebase to latest upstream revision for 1.1.X branch ( http://github.com/django/django/commit/5d5a65fa24f269817c772b8b0777e25e7146354a )
 
- -- Craig de Stigter <craig.destigter@koordinates.com>  Mon, 05 Jul 2010 11:40:50 +1200
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Mon, 05 Jul 2010 12:37:44 +1200
 
 python-django-gis (1.1.1~otm5) intrepid; urgency=low
 
