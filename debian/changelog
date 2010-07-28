@@ -1,3 +1,9 @@
+python-django-gis (1.1.2-1~otm7) intrepid; urgency=low
+
+  * Add settings.DJANGO_GIS_NUMPY, set to False to prevent django.gis.geos from loading numpy
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Thu, 29 Jul 2010 11:51:06 +1200
+
 python-django-gis (1.1.2-1~otm6) intrepid; urgency=low
 
   * Rebase to latest upstream revision for 1.1.X branch ( http://github.com/django/django/commit/5d5a65fa24f269817c772b8b0777e25e7146354a )
