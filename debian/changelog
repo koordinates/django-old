@@ -1,4 +1,41 @@
-python-django-gis (1.1.2alpha~otm1) intrepid; urgency=high
+python-django-gis (1.1.2-1~otm7) intrepid; urgency=low
+
+  * Add settings.DJANGO_GIS_NUMPY, set to False to prevent django.gis.geos from loading numpy
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Thu, 29 Jul 2010 11:51:06 +1200
+
+python-django-gis (1.1.2-1~otm6) intrepid; urgency=low
+
+  * Rebase to latest upstream revision for 1.1.X branch ( http://github.com/django/django/commit/5d5a65fa24f269817c772b8b0777e25e7146354a )
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Mon, 05 Jul 2010 12:37:44 +1200
+
+python-django-gis (1.1.1~otm5) intrepid; urgency=low
+
+  * Fixed 404s in Firefox at admin pages, see upstream ticket http://code.djangoproject.com/ticket/11967
+  * (applied admin_media.2.diff from upstream ticket)
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Tue, 05 Jan 2010 13:13:28 +1300
+
+python-django-gis (1.1.1~otm4) intrepid; urgency=low
+
+  * fix error handling of variables without __unicode__ (eg classes)
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Wed, 30 Dec 2009 14:22:35 +1300
+
+python-django-gis (1.1.1~otm3) feisty; urgency=low
+
+  * fix our custom error reporting stuff, by making it use the new django.views.debug.ExceptionReporter class
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Wed, 30 Dec 2009 12:41:00 +1300
+
+python-django-gis (1.1.1~otm2) feisty; urgency=low
+
+  * fix srid bugs and sqlindexes bug
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Tue, 22 Dec 2009 12:25:35 +1300
+
+python-django-gis (1.1.1~otm1) intrepid; urgency=high
 
   * Upgrade to django 1.1 and apply our previous in-house modifications.
 
