@@ -149,10 +149,6 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         'istartswith': "LIKE %s ESCAPE '\\'",
         'iendswith': "LIKE %s ESCAPE '\\'",
     }
-    
-    def __init__(self, *args, **kwargs):
-        BaseDatabaseWrapper.__init__(self, *args, **kwargs)
-        self._cursors = []
 
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
@@ -163,6 +159,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         self.creation = DatabaseCreation(self)
         self.introspection = DatabaseIntrospection(self)
         self.validation = BaseDatabaseValidation(self)
+        self._cursors = []
 
     def _cursor(self):
         if self.connection is None:
