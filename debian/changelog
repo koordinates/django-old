@@ -1,3 +1,9 @@
+python-django-gis (1.2.1-1otm3) intrepid; urgency=low
+
+  * Catch exceptions in GEOS I/O object destructor at process exit (applied patch 13488.diff from upstream #13488 )
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Wed, 08 Sep 2010 09:41:21 +1200
+
 python-django-gis (1.2.1-1otm2) intrepid; urgency=low
 
   * Updated to latest upstream 1.2.X
