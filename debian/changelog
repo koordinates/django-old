@@ -1,3 +1,9 @@
+python-django-gis (1.2.2-1otm1) intrepid; urgency=low
+
+  * Upgrade to Django 1.2.2 to fix security bug. See http://www.djangoproject.com/weblog/2010/sep/08/security-release/
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Thu, 09 Sep 2010 13:18:23 +1200
+
 python-django-gis (1.2.1-1otm3) intrepid; urgency=low
 
   * Catch exceptions in GEOS I/O object destructor at process exit (applied patch 13488.diff from upstream #13488 )
