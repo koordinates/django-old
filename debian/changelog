@@ -1,3 +1,9 @@
+python-django-gis (1.2.3-1otm1) intrepid; urgency=low
+
+  * Upgraded to latest upstream 1.2.X
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Tue, 21 Sep 2010 17:48:36 +1200
+
 python-django-gis (1.2.2-1otm1) intrepid; urgency=low
 
   * Upgrade to Django 1.2.2 to fix security bug. See http://www.djangoproject.com/weblog/2010/sep/08/security-release/
