@@ -275,6 +275,15 @@ class GEOSGeometry(GEOSBase, ListMixin):
         "This property tests the validity of this Geometry."
         return capi.geos_isvalid(self.ptr)
 
+    @property
+    def valid_reason(self):
+        """
+        Returns a string containing the reason for any invalidity.
+        """
+        if not GEOS_PREPARE:
+            raise GEOSException('Upgrade GEOS to 3.1 to get validity reason.')               
+        return capi.geos_isvalidreason(self.ptr)
+
     #### Binary predicates. ####
     def contains(self, other):
         "Returns true if other.within(this) returns true."

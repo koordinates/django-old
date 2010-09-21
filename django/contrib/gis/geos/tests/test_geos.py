@@ -2,6 +2,7 @@ import ctypes, random, unittest, sys
 from django.contrib.gis.geos import *
 from django.contrib.gis.geos.base import gdal, numpy, GEOSBase
 from django.contrib.gis.tests.geometries import *
+from django.contrib.gis.geos.libgeos import GEOS_PREPARE
 
 class GEOSTest(unittest.TestCase):
 
@@ -918,6 +919,22 @@ class GEOSTest(unittest.TestCase):
                       )
         for geom, merged in zip(ref_geoms, ref_merged):
             self.assertEqual(merged, geom.merged)
+
+    def test27_valid_reason(self):
+        "Testing IsValidReason support"
+        if not GEOS_PREPARE:
+            print >>sys.stderr, "Skipping tests (GEOS < v3.1)"
+            return
+            
+        g = GEOSGeometry("POINT(0 0)")
+        self.assert_(g.valid)
+        self.assert_(isinstance(g.valid_reason, basestring))
+        self.assertEqual(g.valid_reason, "Valid Geometry")
+        
+        g = GEOSGeometry("LINESTRING(0 0, 0 0)")
+        self.assert_(not g.valid)
+        self.assert_(isinstance(g.valid_reason, basestring))
+        self.assertEqual(g.valid_reason, "Too few points in geometry component[0 0]")
 
 def suite():
     s = unittest.TestSuite()
