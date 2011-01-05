@@ -2,7 +2,6 @@
 Writing custom model fields
 ===========================
 
-.. versionadded:: 1.0
 .. currentmodule:: django.db.models
 
 Introduction
@@ -282,7 +281,7 @@ custom form field, and/or implementing the :meth:`formfield` method on
 your field to return a form field class whose `to_python()` returns the
 correct datatype.
 
-Documenting your Custom Field
+Documenting your custom field
 -----------------------------
 
 .. class:: django.db.models.Field
@@ -292,10 +291,11 @@ Documenting your Custom Field
 As always, you should document your field type, so users will know what it is.
 In addition to providing a docstring for it, which is useful for developers,
 you can also allow users of the admin app to see a short description of the
-field type via the ``django.contrib.admindocs`` application. To do this simply
-provide descriptive text in a ``description`` class attribute of your custom field.
-In the above example, the type description displayed by the ``admindocs`` application
-for a ``HandField`` will be 'A hand of cards (bridge style)'.
+field type via the :doc:`django.contrib.admindocs
+</ref/contrib/admin/admindocs>` application. To do this simply provide
+descriptive text in a ``description`` class attribute of your custom field. In
+the above example, the type description displayed by the ``admindocs``
+application for a ``HandField`` will be 'A hand of cards (bridge style)'.
 
 Useful methods
 --------------

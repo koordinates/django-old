@@ -96,9 +96,14 @@ APPEND_SLASH
 
 Default: ``True``
 
-Whether to append trailing slashes to URLs. This is only used if
-``CommonMiddleware`` is installed (see :doc:`/topics/http/middleware`). See also
-``PREPEND_WWW``.
+When set to ``True``, if the request URL does not match any of the patterns
+in the URLconf and it doesn't end in a slash, an HTTP redirect is issued to the
+same URL with a slash appended. Note that the redirect may cause any data
+submitted in a POST request to be lost.
+
+The ``APPEND_SLASH`` setting is only used if
+:class:`~django.middleware.common.CommonMiddleware` is installed
+(see :doc:`/topics/http/middleware`). See also :setting:`PREPEND_WWW`.
 
 .. setting:: AUTHENTICATION_BACKENDS
 
@@ -309,8 +314,12 @@ OPTIONS
 
 Default: ``{}`` (Empty dictionary)
 
-Extra parameters to use when connecting to the database. Consult backend
-module's document for available keywords.
+Extra parameters to use when connecting to the database. Available parameters
+vary depending on your database backend.
+
+Some information on available parameters can be found in the
+:doc:`Database Backends </ref/databases>` documentation. For more information,
+consult your backend module's own documentation.
 
 .. setting:: PASSWORD
 
@@ -370,6 +379,20 @@ passed directly to the backend, so its format is backend-specific.
 Only supported for the ``mysql`` backend (see the `MySQL manual`_ for details).
 
 .. _MySQL manual: MySQL_
+
+.. setting:: TEST_DEPENDENCIES
+
+TEST_DEPENDENCIES
+~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 1.2.4
+
+Default: ``['default']``, for all databases other than ``default``,
+which has no dependencies.
+
+The creation-order dependencies of the database. See the documentation
+on :ref:`controlling the creation order of test databases
+<topics-testing-creation-dependencies>` for details.
 
 .. setting:: TEST_MIRROR
 
@@ -438,7 +461,7 @@ Default: ``'N j, Y'`` (e.g. ``Feb. 4, 2003``)
 The default formatting to use for displaying date fields in any part of the
 system. Note that if :setting:`USE_L10N` is set to ``True``, then the
 locale-dictated format has higher precedence and will be applied instead. See
-:ttag:`allowed date format strings <now>`.
+:tfilter:`allowed date format strings <date>`.
 
 .. versionchanged:: 1.2
     This setting can now be overriden by setting ``USE_L10N`` to ``True``.
@@ -478,7 +501,7 @@ Default: ``'N j, Y, P'`` (e.g. ``Feb. 4, 2003, 4 p.m.``)
 The default formatting to use for displaying datetime fields in any part of the
 system. Note that if :setting:`USE_L10N` is set to ``True``, then the
 locale-dictated format has higher precedence and will be applied instead. See
-:ttag:`allowed date format strings <now>`.
+:tfilter:`allowed date format strings <date>`.
 
 .. versionchanged:: 1.2
     This setting can now be overriden by setting ``USE_L10N`` to ``True``.
@@ -538,8 +561,6 @@ Never deploy a site into production with ``DEBUG`` turned on.
 DEBUG_PROPAGATE_EXCEPTIONS
 --------------------------
 
-.. versionadded:: 1.0
-
 Default: ``False``
 
 If set to True, Django's normal exception handling of view functions
@@ -585,7 +606,7 @@ isn't manually specified. Used with ``DEFAULT_CHARSET`` to construct the
 DEFAULT_FILE_STORAGE
 --------------------
 
-Default: ``'django.core.files.storage.FileSystemStorage'``
+Default: :class:`django.core.files.storage.FileSystemStorage`
 
 Default file storage class to be used for any file-related operations that don't
 specify a particular storage system. See :doc:`/topics/files`.
@@ -605,8 +626,6 @@ site manager(s).
 DEFAULT_INDEX_TABLESPACE
 ------------------------
 
-.. versionadded:: 1.0
-
 Default: ``''`` (Empty string)
 
 Default tablespace to use for indexes on fields that don't specify
@@ -616,8 +635,6 @@ one, if the backend supports it.
 
 DEFAULT_TABLESPACE
 ------------------
-
-.. versionadded:: 1.0
 
 Default: ``''`` (Empty string)
 
@@ -721,8 +738,6 @@ trailing space.
 EMAIL_USE_TLS
 -------------
 
-.. versionadded:: 1.0
-
 Default: ``False``
 
 Whether to use a TLS (secure) connection when talking to the SMTP server.
@@ -731,8 +746,6 @@ Whether to use a TLS (secure) connection when talking to the SMTP server.
 
 FILE_CHARSET
 ------------
-
-.. versionadded:: 1.0
 
 Default: ``'utf-8'``
 
@@ -743,8 +756,6 @@ template files and initial SQL data files.
 
 FILE_UPLOAD_HANDLERS
 --------------------
-
-.. versionadded:: 1.0
 
 Default::
 
@@ -757,8 +768,6 @@ A tuple of handlers to use for uploading. See :doc:`/topics/files` for details.
 
 FILE_UPLOAD_MAX_MEMORY_SIZE
 ---------------------------
-
-.. versionadded:: 1.0
 
 Default: ``2621440`` (i.e. 2.5 MB).
 
@@ -797,8 +806,6 @@ system's standard umask.
 
 FILE_UPLOAD_TEMP_DIR
 --------------------
-
-.. versionadded:: 1.0
 
 Default: ``None``
 
@@ -945,8 +952,6 @@ standard :term:`language format<language code>`. For example, U.S. English is
 LANGUAGE_COOKIE_NAME
 --------------------
 
-.. versionadded:: 1.0
-
 Default: ``'django_language'``
 
 The name of the cookie to use for the language cookie. This can be whatever you
@@ -975,7 +980,7 @@ Generally, the default value should suffice. Only set this setting if you want
 to restrict language selection to a subset of the Django-provided languages.
 
 If you define a custom ``LANGUAGES`` setting, it's OK to mark the languages as
-translation strings (as in the default value displayed above) -- but use a
+translation strings (as in the default value referred to above) -- but use a
 "dummy" ``gettext()`` function, not the one in ``django.utils.translation``.
 You should *never* import ``django.utils.translation`` from within your
 settings file, because that module in itself depends on the settings, and that
@@ -1011,8 +1016,6 @@ See :ref:`using-translations-in-your-own-projects`.
 LOGIN_REDIRECT_URL
 ------------------
 
-.. versionadded:: 1.0
-
 Default: ``'/accounts/profile/'``
 
 The URL where requests are redirected after login when the
@@ -1026,8 +1029,6 @@ decorator, for example.
 LOGIN_URL
 ---------
 
-.. versionadded:: 1.0
-
 Default: ``'/accounts/login/'``
 
 The URL where requests are redirected for login, especially when using the
@@ -1037,8 +1038,6 @@ The URL where requests are redirected for login, especially when using the
 
 LOGOUT_URL
 ----------
-
-.. versionadded:: 1.0
 
 Default: ``'/accounts/logout/'``
 
@@ -1152,7 +1151,7 @@ drilldown, the header for a given day displays the day and month. Different
 locales have different formats. For example, U.S. English would say
 "January 1," whereas Spanish might say "1 Enero."
 
-See :ttag:`allowed date format strings <now>`. See also ``DATE_FORMAT``,
+See :tfilter:`allowed date format strings <date>`. See also ``DATE_FORMAT``,
 ``DATETIME_FORMAT``, ``TIME_FORMAT`` and ``YEAR_MONTH_FORMAT``.
 
 .. setting:: NUMBER_GROUPING
@@ -1167,10 +1166,20 @@ Default: ``0``
 Number of digits grouped together on the integer part of a number. Common use
 is to display a thousand separator. If this setting is ``0``, then, no grouping
 will be applied to the number. If this setting is greater than ``0`` then the
-setting ``THOUSAND_SEPARATOR`` will be used as the separator between those
+setting :setting:`THOUSAND_SEPARATOR` will be used as the separator between those
 groups.
 
-See also ``THOUSAND_SEPARATOR``
+See also :setting:`THOUSAND_SEPARATOR` and :setting:`USE_THOUSAND_SEPARATOR`.
+
+.. setting:: PASSWORD_RESET_TIMEOUT_DAYS
+
+PASSWORD_RESET_TIMEOUT_DAYS
+---------------------------
+
+Default: ``3``
+
+The number of days a password reset link is valid for. Used by the
+:mod:`django.contrib.auth` password reset mechanism.
 
 .. setting:: PREPEND_WWW
 
@@ -1180,8 +1189,8 @@ PREPEND_WWW
 Default: ``False``
 
 Whether to prepend the "www." subdomain to URLs that don't have it. This is only
-used if ``CommonMiddleware`` is installed (see :doc:`/topics/http/middleware`).
-See also ``APPEND_SLASH``.
+used if :class:`~django.middleware.common.CommonMiddleware` is installed
+(see :doc:`/topics/http/middleware`). See also :setting:`APPEND_SLASH`.
 
 .. setting:: PROFANITIES_LIST
 
@@ -1304,8 +1313,6 @@ should be different from ``LANGUAGE_COOKIE_NAME``). See the :doc:`/topics/http/s
 SESSION_COOKIE_PATH
 -------------------
 
-.. versionadded:: 1.0
-
 Default: ``'/'``
 
 The path set on the session cookie. This should either match the URL path of your
@@ -1331,8 +1338,6 @@ See the :doc:`/topics/http/sessions`.
 
 SESSION_ENGINE
 --------------
-
-.. versionadded:: 1.0
 
 .. versionchanged:: 1.1
    The ``cached_db`` backend was added
@@ -1363,8 +1368,6 @@ See the :doc:`/topics/http/sessions`.
 SESSION_FILE_PATH
 -----------------
 
-.. versionadded:: 1.0
-
 Default: ``None``
 
 If you're using file-based session storage, this sets the directory in
@@ -1394,7 +1397,7 @@ Default: ``m/d/Y`` (e.g. ``12/31/2003``)
 An available formatting that can be used for displaying date fields on
 templates. Note that if :setting:`USE_L10N` is set to ``True``, then the
 corresponding locale-dictated format has higher precedence and will be applied.
-See :ttag:`allowed date format strings <now>`.
+See :tfilter:`allowed date format strings <date>`.
 
 See also ``DATE_FORMAT`` and ``SHORT_DATETIME_FORMAT``.
 
@@ -1410,7 +1413,7 @@ Default: ``m/d/Y P`` (e.g. ``12/31/2003 4 p.m.``)
 An available formatting that can be used for displaying datetime fields on
 templates. Note that if :setting:`USE_L10N` is set to ``True``, then the
 corresponding locale-dictated format has higher precedence and will be applied.
-See :ttag:`allowed date format strings <now>`.
+See :tfilter:`allowed date format strings <date>`.
 
 See also ``DATE_FORMAT`` and ``SHORT_DATETIME_FORMAT``.
 
@@ -1536,9 +1539,10 @@ THOUSAND_SEPARATOR
 Default ``,`` (Comma)
 
 Default thousand separator used when formatting numbers. This setting is
-used only when ``NUMBER_GROUPING`` is set.
+used only when ``NUMBER_GROUPING`` and ``USE_THOUSAND_SEPARATOR`` are set.
 
-See also ``NUMBER_GROUPING``, ``DECIMAL_SEPARATOR``
+See also :setting:`NUMBER_GROUPING`, :setting:`DECIMAL_SEPARATOR` and
+:setting:`USE_THOUSAND_SEPARATOR`.
 
 .. setting:: TIME_FORMAT
 
@@ -1550,7 +1554,7 @@ Default: ``'P'`` (e.g. ``4 p.m.``)
 The default formatting to use for displaying time fields in any part of the
 system. Note that if :setting:`USE_L10N` is set to ``True``, then the
 locale-dictated format has higher precedence and will be applied instead. See
-:ttag:`allowed date format strings <now>`.
+:tfilter:`allowed date format strings <date>`.
 
 .. versionchanged:: 1.2
     This setting can now be overriden by setting ``USE_L10N`` to ``True``.
@@ -1704,7 +1708,7 @@ drilldown, the header for a given month displays the month and the year.
 Different locales have different formats. For example, U.S. English would say
 "January 2006," whereas another locale might say "2006/January."
 
-See :ttag:`allowed date format strings <now>`. See also ``DATE_FORMAT``,
+See :tfilter:`allowed date format strings <date>`. See also ``DATE_FORMAT``,
 ``DATETIME_FORMAT``, ``TIME_FORMAT`` and ``MONTH_DAY_FORMAT``.
 
 Deprecated settings

@@ -92,7 +92,7 @@ class ChapterInline(admin.TabularInline):
 
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('content', 'date', callable_year, 'model_year', 'modeladmin_year')
-    list_filter = ('date',)
+    list_filter = ('date', 'section')
 
     def changelist_view(self, request):
         "Test that extra_context works"
@@ -173,6 +173,7 @@ class Person(models.Model):
     )
     name = models.CharField(max_length=100)
     gender = models.IntegerField(choices=GENDER_CHOICES)
+    age = models.IntegerField(default=21)
     alive = models.BooleanField()
 
     def __unicode__(self):
@@ -584,6 +585,9 @@ class Album(models.Model):
     owner = models.ForeignKey(User)
     title = models.CharField(max_length=30)
 
+class AlbumAdmin(admin.ModelAdmin):
+    list_filter = ['title']
+
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(CustomArticle, CustomArticleAdmin)
 admin.site.register(Section, save_as=True, inlines=[ArticleInline])
@@ -630,4 +634,4 @@ admin.site.register(Promo)
 admin.site.register(ChapterXtra1)
 admin.site.register(Pizza, PizzaAdmin)
 admin.site.register(Topping)
-admin.site.register(Album)
+admin.site.register(Album, AlbumAdmin)
