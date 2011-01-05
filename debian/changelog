@@ -1,3 +1,9 @@
+python-django-gis (1.2.4-1otm1) intrepid; urgency=low
+
+  * Upgraded to latest upstream 1.2.X (1.2.4)
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Thu, 06 Jan 2011 12:25:06 +1300
+
 python-django-gis (1.2.3-1otm1) intrepid; urgency=low
 
   * Upgraded to latest upstream 1.2.X
