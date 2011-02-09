@@ -1,3 +1,9 @@
+python-django-gis (1.2.5-1otm1) intrepid; urgency=low
+
+  * Updated to latest upstream 1.2.X (1.2.5)
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Thu, 10 Feb 2011 12:15:15 +1300
+
 python-django-gis (1.2.4-1otm2) intrepid; urgency=low
 
   * Create indexes for foreignkeys in manytomanyfields, using inline patch from http://code.djangoproject.com/ticket/15033
