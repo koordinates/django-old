@@ -1,3 +1,9 @@
+python-django-gis (1.2.5-1otm2) intrepid; urgency=low
+
+  * Fix admin querystring filters using my patch from upstream #15621 ( django-allow-superuser-filters-1.2.Xbackport.diff )
+
+ -- Craig de Stigter <craig.destigter@koordinates.com>  Thu, 10 Feb 2011 16:53:24 +1300
+
 python-django-gis (1.2.5-1otm1) intrepid; urgency=low
 
   * Updated to latest upstream 1.2.X (1.2.5)
