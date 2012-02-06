@@ -31,6 +31,7 @@ class FilterSpecsTests(TestCase):
         self.falseTest = BoolTest.objects.create(completed=False)
 
         self.request_factory = RequestFactory()
+        self.staff = User(is_staff=True, is_superuser=False)
 
 
     def get_changelist(self, request, model, modeladmin):
@@ -42,6 +43,7 @@ class FilterSpecsTests(TestCase):
         modeladmin = BookAdmin(Book, admin.site)
 
         request = self.request_factory.get('/', {'year__isnull': 'True'})
+        request.user = self.staff
         changelist = self.get_changelist(request, Book, modeladmin)
 
         # Make sure changelist.get_query_set() does not raise IncorrectLookupParameters
@@ -55,6 +57,7 @@ class FilterSpecsTests(TestCase):
         self.assertEqual(choices[-1]['query_string'], '?year__isnull=True')
 
         request = self.request_factory.get('/', {'year': '2002'})
+        request.user = self.staff
         changelist = self.get_changelist(request, Book, modeladmin)
 
         # Make sure the correct choice is selected
@@ -68,6 +71,7 @@ class FilterSpecsTests(TestCase):
         modeladmin = BookAdmin(Book, admin.site)
 
         request = self.request_factory.get('/', {'author__isnull': 'True'})
+        request.user = self.staff
         changelist = ChangeList(request, Book, modeladmin.list_display, modeladmin.list_display_links,
             modeladmin.list_filter, modeladmin.date_hierarchy, modeladmin.search_fields,
             modeladmin.list_select_related, modeladmin.list_per_page, modeladmin.list_editable, modeladmin)
@@ -83,6 +87,7 @@ class FilterSpecsTests(TestCase):
         self.assertEqual(choices[-1]['query_string'], '?author__isnull=True')
 
         request = self.request_factory.get('/', {'author__id__exact': self.alfred.pk})
+        request.user = self.staff
         changelist = self.get_changelist(request, Book, modeladmin)
 
         # Make sure the correct choice is selected
@@ -97,6 +102,7 @@ class FilterSpecsTests(TestCase):
         modeladmin = BookAdmin(Book, admin.site)
 
         request = self.request_factory.get('/', {'contributors__isnull': 'True'})
+        request.user = self.staff
         changelist = self.get_changelist(request, Book, modeladmin)
 
         # Make sure changelist.get_query_set() does not raise IncorrectLookupParameters
@@ -110,6 +116,7 @@ class FilterSpecsTests(TestCase):
         self.assertEqual(choices[-1]['query_string'], '?contributors__isnull=True')
 
         request = self.request_factory.get('/', {'contributors__id__exact': self.bob.pk})
+        request.user = self.staff
         changelist = self.get_changelist(request, Book, modeladmin)
 
         # Make sure the correct choice is selected
@@ -125,6 +132,7 @@ class FilterSpecsTests(TestCase):
 
         # FK relationship -----
         request = self.request_factory.get('/', {'books_authored__isnull': 'True'})
+        request.user = self.staff
         changelist = self.get_changelist(request, User, modeladmin)
 
         # Make sure changelist.get_query_set() does not raise IncorrectLookupParameters
@@ -138,6 +146,7 @@ class FilterSpecsTests(TestCase):
         self.assertEqual(choices[-1]['query_string'], '?books_authored__isnull=True')
 
         request = self.request_factory.get('/', {'books_authored__id__exact': self.bio_book.pk})
+        request.user = self.staff
         changelist = self.get_changelist(request, User, modeladmin)
 
         # Make sure the correct choice is selected
@@ -149,6 +158,7 @@ class FilterSpecsTests(TestCase):
 
         # M2M relationship -----
         request = self.request_factory.get('/', {'books_contributed__isnull': 'True'})
+        request.user = self.staff
         changelist = self.get_changelist(request, User, modeladmin)
 
         # Make sure changelist.get_query_set() does not raise IncorrectLookupParameters
@@ -162,6 +172,7 @@ class FilterSpecsTests(TestCase):
         self.assertEqual(choices[-1]['query_string'], '?books_contributed__isnull=True')
 
         request = self.request_factory.get('/', {'books_contributed__id__exact': self.django_book.pk})
+        request.user = self.staff
         changelist = self.get_changelist(request, User, modeladmin)
 
         # Make sure the correct choice is selected
@@ -175,12 +186,14 @@ class FilterSpecsTests(TestCase):
         modeladmin = BoolTestAdmin(BoolTest, admin.site)
 
         request = self.request_factory.get('/')
+        request.user = self.staff
         changelist = ChangeList(request, BoolTest, modeladmin.list_display, modeladmin.list_display_links,
             modeladmin.list_filter, modeladmin.date_hierarchy, modeladmin.search_fields,
             modeladmin.list_select_related, modeladmin.list_per_page, modeladmin.list_editable, modeladmin)
 
         # Make sure changelist.get_query_set() does not raise IncorrectLookupParameters
         queryset = changelist.get_query_set()
+        request.user = self.staff
 
         # Make sure the last choice is None and is selected
         filterspec = changelist.get_filters(request)[0][0]
@@ -190,6 +203,7 @@ class FilterSpecsTests(TestCase):
         self.assertEqual(choices[-1]['query_string'], '?completed__exact=0')
 
         request = self.request_factory.get('/', {'completed__exact': 1})
+        request.user = self.staff
         changelist = self.get_changelist(request, BoolTest, modeladmin)
 
         # Make sure the correct choice is selected
